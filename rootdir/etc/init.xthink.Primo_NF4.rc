@@ -1,0 +1,45 @@
+import /vendor/etc/init/trustkernel.rc
+
+# Xthinks add by meip@x-thinks.com on 2018.06.11
+# add for FactoryTest to give permmision to write nodes begin
+on late-init
+    chmod 0666 /sys/class/leds/red/brightness
+    chmod 0666 /sys/class/leds/green/brightness
+
+# Xthinks add by meip@x-thinks.com on 2017.11.22
+# add for FactoryTest to test flashlight and leds
+on property:sys.class.leds.red.on=30
+    write /sys/class/leds/red/brightness 255
+
+on property:sys.class.leds.red.off=30
+    write /sys/class/leds/red/brightness 0
+
+on property:sys.class.leds.green.on=30
+    write /sys/class/leds/green/brightness 255
+
+on property:sys.class.leds.green.off=30
+    write /sys/class/leds/green/brightness 0
+
+# Xthinks add by meip@x-thinks.com on 2018.06.11
+# add for FactoryTest to turn on flash to test
+on property:sys.class.flashlight.back=30
+    write /sys/class/flashlight_core/flashlight/flashlight_strobe "0 0 0 0 400"
+on property:sys.class.flashlight.front=30
+    write /sys/class/flashlight_core/flashlight/flashlight_strobe "1 0 0 0 400"
+
+# xthinks add, begin.  lij@x-thinks.com 2018.9.17
+service attest_key_check /vendor/bin/attest_key_check
+   class main
+   user root
+   group root
+   oneshot
+   disabled
+
+on property:trustkernel.log.state=enable
+   start attest_key_check
+# xthinks end
+
+# Xthinks add for sunwave fingerprint
+on boot
+   chown system system /dev/sunwave_fp
+   chmod 0660          /dev/sunwave_fp 
